@@ -36,6 +36,7 @@ node_modules/
 .next/
 out/
 build/
+package-lock.json
 
 # Cache
 .npm/

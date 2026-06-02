@@ -1,0 +1,12 @@
+# Changelog
+
+## 2026-06-02
+
+### Added
+
+- `.cursor/rules/project-global-standards.mdc` — always-on Cursor rules: stack (Next.js + Tailwind / FastAPI + SQLite), minimal code style, SQLite single-table by resume ID, LLM try-except with mock fallback.
+
+### Changed
+
+- `README.md` — project overview and link to Cursor project standards.
+- `.gitignore` — ignore `package-lock.json`.

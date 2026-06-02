@@ -1,0 +1,36 @@
+---
+description: Project-wide standards for smart-resume-app (full-stack web app)
+alwaysApply: true
+---
+
+# Project Global Standards
+
+## Stack
+
+- Full-stack web app: frontend **Next.js (App Router)** + **Tailwind CSS**; backend **FastAPI** + **SQLite**.
+
+## Code Style
+
+- Keep code minimal and readable; avoid over-abstraction and unnecessary wrappers.
+
+## Database
+
+- Use **SQLite only**, with a **single table** for storage.
+- Link records by **resume ID**; no complex user login or authentication.
+
+## LLM Calls
+
+- Every LLM call **must** be wrapped in `try-except`.
+- When the API key is missing or the call fails, return **structured mock data** so the frontend can always render.
+
+```python
+# Backend example
+try:
+    result = await call_llm(prompt)
+except Exception:
+    result = MOCK_RESUME_ANALYSIS  # fixed shape matching the real response
+```
+
+```typescript
+// Frontend: treat mock the same as live data; no special error UI for missing keys
+```
