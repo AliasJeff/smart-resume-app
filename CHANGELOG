@@ -10,3 +10,17 @@
 
 - `README.md` — project overview and link to Cursor project standards.
 - `.gitignore` — ignore `package-lock.json`.
+
+## 2026-06-02 (backend)
+
+### Added
+
+- `backend/database.py` — SQLAlchemy sync SQLite engine (`resume.db`), session factory, `get_db` dependency.
+- `backend/models.py` — `Resume` model: UUID `id`, `filename`, `raw_text`, `parsed_data`, `optimized_data`.
+- `backend/main.py` — FastAPI app with CORS, lifespan table creation, health / upload / resume routes.
+- `backend/run.py` — uvicorn dev server startup script (`python run.py`).
+- `backend/API.md` — REST API documentation (endpoints, request/response, errors).
+
+### Changed
+
+- `README.md` — backend quick start and API endpoint summary.
