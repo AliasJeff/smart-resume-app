@@ -14,10 +14,14 @@ python run.py
 
 Server runs at `http://localhost:8000`. API reference: [`backend/API.md`](backend/API.md).
 
+Copy `backend/.env.example` to `backend/.env` and set `OPENAI_API_KEY` for live LLM calls. Without a valid key, parse/optimize endpoints return structured mock data so the frontend can still render.
+
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/health` | Health check |
 | POST | `/api/upload` | Upload PDF, extract text, save to DB |
+| POST | `/api/parse/{id}` | Parse `raw_text` to structured JSON (`parsed_data`) |
+| POST | `/api/optimize/{id}` | STAR-optimize experience in `parsed_data` (`optimized_data`) |
 | GET | `/api/resume/{id}` | Get resume by UUID |
 
 ## Project standards

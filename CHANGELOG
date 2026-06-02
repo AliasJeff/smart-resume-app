@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-06-02 (LLM)
+
+### Added
+
+- `backend/llm_service.py` — OpenAI integration: `parse_to_json`, `optimize_experience`; mock fallback when key is missing or call fails.
+- `POST /api/parse/{id}` — parse `raw_text` to structured JSON, save `parsed_data`.
+- `POST /api/optimize/{id}` — STAR-optimize experience in `parsed_data`, save `optimized_data`.
+
+### Changed
+
+- `backend/main.py` — wire parse and optimize routes to `llm_service`.
+- `backend/API.md` — document parse/optimize endpoints, JSON schema, and LLM env config.
+- `README.md` — endpoint table, `.env` setup note for `OPENAI_API_KEY`.
+
 ## 2026-06-02
 
 ### Added

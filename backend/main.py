@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 import models  # noqa: F401 — 注册 Resume 模型到 Base.metadata
 from database import Base, engine, get_db
+from llm_service import optimize_experience, parse_to_json
 from models import Resume
 
 
@@ -76,6 +77,38 @@ async def upload_resume(
     db.commit()
 
     return {"id": resume_id, "message": "上传并解析成功"}
+
+
+@app.post("/api/parse/{resume_id}")
+def parse_resume(resume_id: str, db: Session = Depends(get_db)):
+    """读取 raw_text，调用 LLM 结构化解析，写入 parsed_data"""
+    resume = db.get(Resume, resume_id)
+    if resume is None:
+        raise HTTPException(status_code=404, detail="简历不存在")
+    if not resume.raw_text or not resume.raw_text.strip():
+        raise HTTPException(status_code=400, detail="无原始文本可解析")
+
+    parsed_data = parse_to_json(resume.raw_text)
+    resume.parsed_data = parsed_data
+    db.commit()
+
+    return {"id": resume_id, "parsed_data": parsed_data}
+
+
+@app.post("/api/optimize/{resume_id}")
+def optimize_resume(resume_id: str, db: Session = Depends(get_db)):
+    """读取 parsed_data，调用 LLM 润色工作经历，写入 optimized_data"""
+    resume = db.get(Resume, resume_id)
+    if resume is None:
+        raise HTTPException(status_code=404, detail="简历不存在")
+    if not resume.parsed_data:
+        raise HTTPException(status_code=400, detail="请先解析简历")
+
+    optimized_data = optimize_experience(resume.parsed_data)
+    resume.optimized_data = optimized_data
+    db.commit()
+
+    return {"id": resume_id, "optimized_data": optimized_data}
 
 
 @app.get("/api/resume/{resume_id}")
