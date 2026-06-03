@@ -1,0 +1,11 @@
+venv
+__pycache__
+*.py[cod]
+*.db
+.env
+.env.*
+.git
+.pytest_cache
+.mypy_cache
+.ruff_cache
+resume.db

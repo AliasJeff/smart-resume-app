@@ -1,0 +1,30 @@
+# Used when build context is repo root (optional root-level builds).
+# Per-service builds use context ../backend or ../frontend with ignores in those dirs.
+
+node_modules
+.next
+out
+build
+venv
+.venv
+data
+*.db
+.env
+.env.*
+.git
+.idea
+.vscode
+*.log
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.turbo
+.npm
+coverage
+.DS_Store
+Thumbs.db
+CHANGELOG
+.cursor
+devops

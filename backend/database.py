@@ -1,30 +1,32 @@
+import os
 from pathlib import Path
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-# 数据库文件路径（存放在 backend 目录下）
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_URL = f"sqlite:///{BASE_DIR / 'resume.db'}"
+DB_DIR = Path(os.environ.get("DB_DIR", str(BASE_DIR)))
+DB_DIR.mkdir(parents=True, exist_ok=True)
 
-# SQLite 同步引擎；check_same_thread=False 供 FastAPI 在多线程环境下使用
+DATABASE_URL = f"sqlite:///{DB_DIR / 'resume.db'}"
+
+# SQLite sync engine; check_same_thread=False for FastAPI multi-threaded use
 engine = create_engine(
     DATABASE_URL,
     connect_args={"check_same_thread": False},
 )
 
-# 会话工厂，用于创建数据库会话
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):
-    """SQLAlchemy 模型基类"""
+    """SQLAlchemy model base class"""
 
     pass
 
 
 def get_db():
-    """依赖注入：获取数据库会话，请求结束后自动关闭"""
+    """Dependency injection: yield a DB session and close it after the request."""
     db = SessionLocal()
     try:
         yield db

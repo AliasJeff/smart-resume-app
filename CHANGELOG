@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-06-02 (devops)
+
+### Added
+
+- `devops/` — production deployment assets (Docker + Ubuntu bare metal).
+- `devops/docker-compose.yml` — `backend` + `frontend` services; volume `./data`, `DB_DIR`, `BACKEND_URL` internal proxy.
+- `devops/backend/Dockerfile` — Python 3.11-slim, Tsinghua pip mirror, uvicorn on 8000.
+- `devops/frontend/Dockerfile` — Node 20 multi-stage build with Next.js standalone output.
+- `devops/setup_vm.sh` — Ubuntu one-shot install (Nginx, Node 20, PM2, frontend build, backend venv).
+- `devops/nginx.conf` — port 80 reverse proxy; `client_max_body_size 20M`; `/api/` → 8000, `/` → 3000.
+- `devops/ecosystem.config.js` — PM2 apps `resume-backend` and `resume-frontend`.
+- Root `docker-compose.yml` — includes `devops/docker-compose.yml`.
+- Root `.env.example` — Docker Compose env template.
+- `data/.gitkeep` — persistent SQLite volume mount directory.
+- `backend/.dockerignore`, `frontend/.dockerignore` — build context excludes.
+
+### Changed
+
+- `frontend/next.config.ts` — `output: "standalone"`; `/api/*` rewrite to `BACKEND_URL` (same-origin, no CORS).
+- `frontend/src/lib/api.ts` — relative `/api/...` paths instead of hardcoded `localhost:8000`.
+- `backend/database.py` — `DB_DIR` env for SQLite path; auto-create directory for Docker/bare-metal volumes.
+
 ## 2026-06-02 (analysis & editor)
 
 ### Added (backend)

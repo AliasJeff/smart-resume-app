@@ -6,8 +6,6 @@ import {
   type ResumeResponse,
 } from "@/types/resume";
 
-const API_BASE = "http://localhost:8000";
-
 type UploadResponse = {
   id: string;
   message: string;
@@ -80,12 +78,12 @@ export async function uploadResume(file: File): Promise<UploadResponse> {
 
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}/api/upload`, {
+    response = await fetch("/api/upload", {
       method: "POST",
       body: formData,
     });
   } catch {
-    throw new Error("无法连接服务器，请确认后端已在 localhost:8000 运行");
+    throw new Error("无法连接服务器，请确认后端服务已启动");
   }
 
   if (!response.ok) {
@@ -98,7 +96,7 @@ export async function uploadResume(file: File): Promise<UploadResponse> {
 export async function parseResume(resumeId: string): Promise<ParseResponse> {
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}/api/parse/${resumeId}`, {
+    response = await fetch(`/api/parse/${resumeId}`, {
       method: "POST",
     });
   } catch {
@@ -115,7 +113,7 @@ export async function parseResume(resumeId: string): Promise<ParseResponse> {
 export async function getResume(resumeId: string): Promise<ResumeResponse> {
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}/api/resume/${resumeId}`);
+    response = await fetch(`/api/resume/${resumeId}`);
   } catch {
     throw new Error("无法加载简历，请检查网络连接");
   }
@@ -148,7 +146,7 @@ export async function updateResume(
   data: ResumeData,
 ): Promise<UpdateResponse> {
   return requestJson<UpdateResponse>(
-    `${API_BASE}/api/resume/${resumeId}`,
+    `/api/resume/${resumeId}`,
     {
       method: "PUT",
       body: JSON.stringify(data),
@@ -162,7 +160,7 @@ export async function optimizeResume(
   data: ResumeData,
 ): Promise<OptimizeResponse> {
   return requestJson<OptimizeResponse>(
-    `${API_BASE}/api/optimize/${resumeId}`,
+    `/api/optimize/${resumeId}`,
     {
       method: "POST",
       body: JSON.stringify(data),
@@ -176,7 +174,7 @@ export async function analyzeResume(
   data: ResumeData,
 ): Promise<{ id: string; analysis_data: AnalysisData }> {
   const result = await requestJson<AnalyzeResponse>(
-    `${API_BASE}/api/analyze/${resumeId}`,
+    `/api/analyze/${resumeId}`,
     {
       method: "POST",
       body: JSON.stringify(data),

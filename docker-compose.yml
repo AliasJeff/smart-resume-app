@@ -1,0 +1,3 @@
+# Convenience entrypoint — delegates to devops/
+include:
+  - devops/docker-compose.yml

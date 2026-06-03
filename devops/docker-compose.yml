@@ -1,0 +1,32 @@
+# Run from this directory: docker compose up --build -d
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: backend/Dockerfile
+    container_name: smart-resume-backend
+    restart: unless-stopped
+    env_file:
+      - path: ../.env
+        required: false
+      - path: ../backend/.env
+        required: false
+    environment:
+      DB_DIR: /app/data
+    volumes:
+      - ../data:/app/data
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: frontend/Dockerfile
+    container_name: smart-resume-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:3000"
+    environment:
+      BACKEND_URL: http://backend:8000
