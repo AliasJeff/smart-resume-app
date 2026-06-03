@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 import { AutoTextarea } from "@/components/AutoTextarea";
+import { ResumePreviewModal } from "@/components/ResumePreviewModal";
 import { useToast } from "@/components/Toast";
 import { getResume, optimizeResume } from "@/lib/api";
 import {
@@ -63,6 +64,7 @@ export function EditorWorkbench({ resumeId }: EditorWorkbenchProps) {
   const [filename, setFilename] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -200,19 +202,32 @@ export function EditorWorkbench({ resumeId }: EditorWorkbenchProps) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <ResumePreviewModal
+        open={previewOpen}
+        data={data}
+        onClose={() => setPreviewOpen(false)}
+      />
+
       <header className="sticky top-0 z-20 border-b border-border bg-surface/90 px-6 py-3 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-4">
             <Link
               href="/"
-              className="text-sm text-muted transition-colors hover:text-foreground"
+              className="shrink-0 text-sm text-muted transition-colors hover:text-foreground"
             >
               ← 返回
             </Link>
-            <span className="text-sm font-medium text-foreground">
+            <span className="truncate text-sm font-medium text-foreground">
               {filename || "简历编辑"}
             </span>
           </div>
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(true)}
+            className="shrink-0 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-accent/40 hover:bg-background"
+          >
+            📄 预览并导出 PDF
+          </button>
         </div>
       </header>
 

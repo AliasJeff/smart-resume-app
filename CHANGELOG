@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-06-02 (preview)
+
+### Added
+
+- `frontend/src/components/ResumePreview.tsx` — A4 two-column resume layout (white background, bold section headings, bullet lists) driven by live form JSON.
+- `frontend/src/components/ResumePreviewModal.tsx` — full-screen preview modal with `react-to-print` PDF export; modal chrome hidden when printing.
+- Editor header button「📄 预览并导出 PDF」— opens preview modal synced with current editor state.
+
+### Changed
+
+- `frontend/package.json` — add `react-to-print` and `lucide-react` dependencies.
+- `frontend/src/app/editor/[id]/EditorWorkbench.tsx` — integrate preview modal and export action.
+
 ## 2026-06-02 (editor)
 
 ### Added
