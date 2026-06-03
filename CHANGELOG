@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-06-02 (frontend)
+
+### Added
+
+- `frontend/src/app/page.tsx` — Notion-style home page with click/drag PDF upload, loading states, and auto parse + redirect to `/editor/[id]`.
+- `frontend/src/app/layout.tsx` — root layout with metadata and `ToastProvider`.
+- `frontend/src/components/Toast.tsx` — toast notifications for network and API errors.
+- `frontend/src/lib/api.ts` — `uploadResume` and `parseResume` fetch helpers against `localhost:8000`.
+- `frontend/src/app/editor/[id]/page.tsx` — editor route placeholder after successful parse.
+
+### Changed
+
+- Migrated App Router from `frontend/app/` to `frontend/src/app/`; moved `favicon.ico`.
+- `frontend/tsconfig.json` — `@/*` path alias points to `./src/*`.
+- `frontend/src/app/globals.css` — Notion-inspired palette and loading animations; system font stack (no Google Fonts at build time).
+
+### Removed
+
+- Default Next.js starter pages under `frontend/app/`.
+
 ## 2026-06-02 (LLM)
 
 ### Added
