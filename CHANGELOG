@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-06-02 (analysis & editor)
+
+### Added (backend)
+
+- `Resume.analysis_data` — JSON field for AI diagnosis results.
+- `llm_service.analyze_resume` — strict HR director scoring with `MOCK_ANALYSIS_DATA` fallback.
+- `PUT /api/resume/{id}` — save frontend-edited `parsed_data`.
+- `POST /api/analyze/{id}` — diagnose resume JSON, persist `analysis_data`.
+- SQLite startup migration for `analysis_data` column on existing databases.
+
+### Changed (backend)
+
+- `POST /api/optimize/{id}` — accepts JSON body from client; syncs result to both `optimized_data` and `parsed_data`.
+- `GET /api/resume/{id}` — returns `analysis_data`.
+
+### Added (frontend)
+
+- `AnalysisData` type and `normalizeAnalysisData`; `ResumeResponse` includes `analysis_data`.
+- `updateResume`, `analyzeResume` API helpers; `optimizeResume` sends current form JSON in body.
+- Editor「💾 保存修改」with loading guard and Toast feedback.
+- Form CRUD: add/remove education, experience, and projects.
+- Right panel「📊 AI 简历诊断」— score card (color by tier), strengths / weaknesses / suggestions, re-diagnose.
+
+### Changed (frontend)
+
+- `EditorWorkbench` — optimize and analyze pass live `data`; load cached `analysis_data` on init.
+- `ResumePreview` — single-column ATS-friendly layout (header → summary → experience → education → skills); `print:break-inside-avoid` on entries.
+
 ## 2026-06-02 (preview)
 
 ### Added

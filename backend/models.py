@@ -14,3 +14,4 @@ class Resume(Base):
     raw_text: Mapped[str | None] = mapped_column(Text, nullable=True)  # PDF 提取的原始文本
     parsed_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # 结构化解析数据
     optimized_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # AI 优化后的数据
+    analysis_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # AI 诊断评分数据

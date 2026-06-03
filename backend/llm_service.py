@@ -171,6 +171,38 @@ The JSON must contain exactly these four top-level keys:
 
 Preserve original language (Chinese/English) from the resume. Do not invent facts not in the text."""
 
+MOCK_ANALYSIS_DATA: dict = {
+    "score": 85,
+    "strengths": [
+        "工作经历结构清晰，具备可量化的业务成果描述",
+        "技术栈与目标岗位匹配度较高，覆盖后端与分布式常见组件",
+        "教育背景完整，学历与项目经历形成较好互补",
+    ],
+    "weaknesses": [
+        "部分项目描述仍偏职责罗列，STAR 结构不够完整",
+        "个人简介对差异化优势的提炼可以更加聚焦",
+        "技能列表缺少熟练度或场景标注，难以判断深度",
+    ],
+    "suggestions": [
+        "将核心项目改写为「情境-任务-行动-结果」四段式，并补充关键指标",
+        "在简介首句明确目标岗位与 3 年内的核心卖点",
+        "为 Top 5 技能补充使用场景（如高并发、数据规模、团队规模）",
+    ],
+}
+
+ANALYZE_SYSTEM_PROMPT = """You are a strict senior HR director with 15+ years of hiring experience.
+Diagnose the provided structured resume JSON and return valid JSON only.
+
+The JSON must contain exactly these keys:
+- score: integer from 0 to 100 (be rigorous; average resumes score 60-75)
+- strengths: array of strings (2-5 specific strengths based on the resume)
+- weaknesses: array of strings (2-5 specific gaps or risks)
+- suggestions: array of strings (3-6 actionable improvement tips)
+
+Evaluate content quality, quantified achievements, STAR structure, relevance to tech roles,
+and overall professionalism. Use the same language as the resume (Chinese or English).
+Do not invent experience not present in the JSON."""
+
 OPTIMIZE_SYSTEM_PROMPT = """You are a senior HR consultant specializing in tech resumes.
 Rewrite work experience and project descriptions using the STAR method
 (Situation, Task, Action, Result).
@@ -197,6 +229,30 @@ def _parse_json_content(content: str | None) -> dict | None:
         return json.loads(content)
     except json.JSONDecodeError:
         return None
+
+
+def _ensure_analysis_schema(data: dict) -> dict:
+    """Ensure analysis JSON contains score, strengths, weaknesses, suggestions."""
+    raw_score = data.get("score")
+    if isinstance(raw_score, bool):
+        score = 85
+    elif isinstance(raw_score, (int, float)):
+        score = max(0, min(100, int(raw_score)))
+    else:
+        score = 85
+
+    def as_string_list(key: str) -> list[str]:
+        value = data.get(key)
+        if not isinstance(value, list):
+            return []
+        return [item for item in value if isinstance(item, str) and item.strip()]
+
+    return {
+        "score": score,
+        "strengths": as_string_list("strengths"),
+        "weaknesses": as_string_list("weaknesses"),
+        "suggestions": as_string_list("suggestions"),
+    }
 
 
 def _ensure_parsed_schema(data: dict) -> dict:
@@ -273,3 +329,33 @@ def optimize_experience(parsed_json: dict) -> dict:
         return _ensure_parsed_schema(optimized)
     except Exception:
         return copy.deepcopy(MOCK_OPTIMIZED_RESUME)
+
+
+def analyze_resume(parsed_json: dict) -> dict:
+    """Diagnose resume JSON and return score with strengths, weaknesses, suggestions."""
+    if not parsed_json:
+        return copy.deepcopy(MOCK_ANALYSIS_DATA)
+
+    client = _get_client()
+    if client is None:
+        return copy.deepcopy(MOCK_ANALYSIS_DATA)
+
+    try:
+        response = client.chat.completions.create(
+            model=MODEL,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": ANALYZE_SYSTEM_PROMPT},
+                {
+                    "role": "user",
+                    "content": json.dumps(parsed_json, ensure_ascii=False),
+                },
+            ],
+            temperature=0.3,
+        )
+        analysis = _parse_json_content(response.choices[0].message.content)
+        if analysis is None:
+            return copy.deepcopy(MOCK_ANALYSIS_DATA)
+        return _ensure_analysis_schema(analysis)
+    except Exception:
+        return copy.deepcopy(MOCK_ANALYSIS_DATA)
