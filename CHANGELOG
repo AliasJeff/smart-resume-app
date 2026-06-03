@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-02 (docs)
+
+### Changed
+
+- `README.md` — full project overview: features, architecture, local dev, env vars, API summary, Docker and Ubuntu deployment guides.
+
 ## 2026-06-02 (devops)
 
 ### Added
