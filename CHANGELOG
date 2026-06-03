@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-06-02 (editor)
+
+### Added
+
+- `frontend/src/app/editor/[id]/EditorWorkbench.tsx` — split-pane editor: loads `parsed_data` via `GET /api/resume/{id}`, Feishu-style form on the left, AI panel on the right.
+- `frontend/src/components/AutoTextarea.tsx` — auto-resizing textarea for experience and project descriptions.
+- `frontend/src/types/resume.ts` — `ResumeData` types and `normalizeResumeData` helper.
+- `frontend/src/lib/api.ts` — `getResume` and `optimizeResume` fetch helpers.
+
+### Changed
+
+- `frontend/src/app/editor/[id]/page.tsx` — render `EditorWorkbench` instead of placeholder.
+- `frontend/src/app/globals.css` — skeleton pulse animation for AI panel loading state.
+
 ## 2026-06-02 (frontend)
 
 ### Added
